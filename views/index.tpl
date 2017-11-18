@@ -36,7 +36,7 @@
 					<div class="am-g">
 						<div class="am-u-sm-12 am-u-md-6">
 							<div class="am-btn-toolbar">
-								<div class="am-btn-group am-btn-group-xs">{{item.day}}</div>
+								<div class="am-btn-group am-btn-group-xs" v-text="item.day"></div>
 							</div>
 						</div>
 					</div>

@@ -20,7 +20,7 @@ func (c *MainController) Get() {
 
 // @router /list [get]
 func (c *MainController) List() {
-	dayMovies := oabt.DoSnatch2("")
+	dayMovies := oabt.DoSnatch("")
 	j, err := json.Marshal(dayMovies)
 	if err != nil {
 		log.Fatal(err)
