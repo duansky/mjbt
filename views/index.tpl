@@ -5,8 +5,12 @@
 <title>Beego</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="http://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.css" rel="stylesheet" type="text/css">
-<link href="http://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.bootcss.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet" type="text/css">
+<style>
+	.floatno{
+		float:none!important;
+	}
+</style>
 </head>
 
 <body>
@@ -18,84 +22,42 @@
 
 	<div class="am-cf admin-main" id="app">
 		<!-- content start -->
-		<div class="admin-content">
+		<div class="admin-content am-u-sm-10 am-center floatno">
 			<div class="admin-content-body">
 				<div class="am-cf am-padding am-padding-bottom-0">
 					<div class="am-fl am-cf">
-						<strong class="am-text-primary am-text-lg">表格</strong>
-						<button type="button" @click="getJson"
-														class="am-btn am-btn-default am-btn-xs am-hide-sm-only">
-														<span class="am-icon-copy"></span> 复制
-													</button>
+						<strong class="am-text-primary am-text-lg">全部资源</strong>
 					</div>
 				</div>
 
-				<hr>
-			
-				<div v-for="item in list">
-					<div class="am-g">
-						<div class="am-u-sm-12 am-u-md-6">
-							<div class="am-btn-toolbar">
-								<div class="am-btn-group am-btn-group-xs" v-text="item.day"></div>
-							</div>
-						</div>
-					</div>
-	
-					<div class="am-g">
-						<div class="am-u-sm-12">
-							<form class="am-form">
-								<table
-									class="am-table am-table-striped am-table-hover table-main">
-									<tbody>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>1</td>
-											<td><a href="#">Business management</a></td>
-											<td>default</td>
-											<td class="am-hide-sm-only">测试1号</td>
-											<td class="am-hide-sm-only">2014年9月4日 7:28:47</td>
-											<td>
-												<div class="am-btn-toolbar">
-													<div class="am-btn-group am-btn-group-xs">
-														<button
-															class="am-btn am-btn-default am-btn-xs am-text-secondary">
-															<span class="am-icon-pencil-square-o"></span> 编辑
-														</button>
-														<button
-															class="am-btn am-btn-default am-btn-xs am-hide-sm-only">
-															<span class="am-icon-copy"></span> 复制
-														</button>
-													</div>
+				<div class="am-g" >
+					<div class="am-u-sm-12" style="float:auto;">
+						<form class="am-form">
+							<table class="am-table am-table-striped am-table-hover table-main">
+								<tbody>
+									<tr v-for="movieInfo in list">
+										<td v-text="movieInfo.updateTime"></td>
+										<td style="width: 100px;" v-text="movieInfo.name"></td>
+										<td v-text="movieInfo.size"></td>
+										<td>
+											<div class="am-btn-toolbar">
+												<div class="am-btn-group am-btn-group-xs">
+													<button
+														class="am-btn am-btn-default am-btn-xs am-text-secondary">
+														<span class="am-icon-pencil-square-o"></span> 复制ed2k
+													</button>
+													<button
+														class="am-btn am-btn-default am-btn-xs am-hide-sm-only">
+														<span class="am-icon-copy"></span> 复制magnet
+													</button>
 												</div>
-											</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>2</td>
-											<td><a href="#">Business management</a></td>
-											<td>default</td>
-											<td class="am-hide-sm-only">测试1号</td>
-											<td class="am-hide-sm-only">2014年9月4日 7:28:47</td>
-											<td>
-												<div class="am-btn-toolbar">
-													<div class="am-btn-group am-btn-group-xs">
-														<button
-															class="am-btn am-btn-default am-btn-xs am-text-secondary">
-															<span class="am-icon-pencil-square-o"></span> 编辑
-														</button>
-														<button
-															class="am-btn am-btn-default am-btn-xs am-hide-sm-only">
-															<span class="am-icon-copy"></span> 复制
-														</button>
-													</div>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<hr />
-							</form>
-						</div>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<hr />
+						</form>
 					</div>
 				</div>
 			</div>
@@ -109,7 +71,7 @@
 </body>
 </html>
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script>
+<script src="https://cdn.bootcss.com/amazeui/2.7.2/js/amazeui.min.js"></script>
 <script src="https://cdn.bootcss.com/vue/2.5.3/vue.min.js"></script>
 <script src="https://cdn.bootcss.com/vue-resource/1.3.4/vue-resource.min.js"></script>
 <script type="application/javascript">
@@ -118,12 +80,23 @@ var app = new Vue({
 	data: {
 		list: {},
 	},
+	created: function () {
+    	this.getJson();
+    },
 	methods: {
 		getJson: function () {
 			var self = this;
-				console.log(111111)  
 			self.$http.get('list').then(function(res) {
-				this.list = res.body
+				this.list = []
+				var list = res.body
+				for (var i in list) {
+					var day = list[i].day
+					var movieInfos = list[i].movieInfos
+					for (var m in movieInfos) {
+						movieInfos[m].updateTime = day + " " + movieInfos[m].updateTime
+						this.list.push(movieInfos[m])
+					}
+				}
 			}).catch(function(err) {
 				console.log(err)  
 			})
