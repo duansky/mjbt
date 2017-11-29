@@ -15,9 +15,9 @@ func (c *MainController) Get() {
 	c.TplName = "index.tpl"
 }
 
-// @router /list [get]
+// @router /list [post]
 func (c *MainController) List() {
-	dayMovies := oabt.DoSnatch("")
+	dayMovies := oabt.DoSnatch(c.GetString("keywords"))
 	//	j, err := json.Marshal(dayMovies)
 	//	if err != nil {
 	//		log.Fatal(err)

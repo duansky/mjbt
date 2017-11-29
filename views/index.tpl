@@ -2,7 +2,7 @@
 
 <html>
 <head>
-<title>Beego</title>
+<title>美剧搜索</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="https://cdn.bootcss.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet" type="text/css">
@@ -24,12 +24,17 @@
 		<!-- content start -->
 		<div class="admin-content am-u-sm-10 am-center floatno">
 			<div class="admin-content-body">
-				<div class="am-cf am-padding am-padding-bottom-0">
-					<div class="am-fl am-cf">
-						<strong class="am-text-primary am-text-lg">全部资源</strong>
-					</div>
-				</div>
-
+				<div class="am-g am-center am-u-md-4 floatno">
+			        <div class="am-u-sm-12">
+			          <div class="am-input-group am-input-group-sm">
+			            <input type="text" class="am-form-field" v-model="param.keywords" @keyup.enter="getJson">
+				          <span class="am-input-group-btn">
+				            <button class="am-btn am-btn-default" type="button" @click="getJson">搜索</button>
+				          </span>
+			          </div>
+			        </div>
+			    </div>
+				<p></p>
 				<div class="am-g" >
 					<div class="am-u-sm-12" style="float:auto;">
 						<form class="am-form">
@@ -37,7 +42,7 @@
 								<tbody>
 									<tr v-for="movieInfo in list">
 										<td v-text="movieInfo.updateTime"></td>
-										<td style="width: 100px;" v-text="movieInfo.name"></td>
+										<td v-text="movieInfo.name"></td>
 										<td v-text="movieInfo.size"></td>
 										<td>
 											<div class="am-btn-toolbar">
@@ -79,6 +84,9 @@ var app = new Vue({
 	el: '#app',
 	data: {
 		list: {},
+		param: {
+			keywords: "",
+		},
 	},
 	created: function () {
     	this.getJson();
@@ -86,7 +94,7 @@ var app = new Vue({
 	methods: {
 		getJson: function () {
 			var self = this;
-			self.$http.get('list').then(function(res) {
+			self.$http.post('list', self.param, {emulateJSON:true}).then(function(res) {
 				this.list = []
 				var list = res.body
 				for (var i in list) {
