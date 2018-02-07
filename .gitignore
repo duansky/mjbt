@@ -1,0 +1,53 @@
+# Java Files #
+*.class
+#*.jar
+*.war
+*.ear
+
+# Go Files #
+*.exe
+
+# IntelliJ IDEA Files #
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+target/
+
+# Jrebel Files #
+rebel.xml
+
+# Eclipse Start #
+
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# Eclipse End #
+
+# PDT-specific
+.buildpath
+*.log
+*.lock
+*.data
