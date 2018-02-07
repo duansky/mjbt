@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"mjbt/go/models/oabt"
+	"mjbt/models/oabt"
 
 	"github.com/astaxie/beego"
 )

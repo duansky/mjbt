@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "mjbt/go/routers"
+	_ "mjbt/routers"
 
 	"github.com/astaxie/beego"
 )

@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"mjbt/go/controllers"
+	"mjbt/controllers"
 
 	"github.com/astaxie/beego"
 )
