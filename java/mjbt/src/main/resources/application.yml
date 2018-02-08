@@ -1,0 +1,5 @@
+server:
+  port: 8080
+  
+sites:
+  site1: http://oabt003.com
