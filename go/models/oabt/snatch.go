@@ -2,7 +2,6 @@ package oabt
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -42,8 +41,8 @@ func DoSnatch(key string) []*MovieInfo {
 	listItem := doc.Find(".link-list-wrapper")
 
 	/**********写文件***********/
-	s, _ := doc.Html()
-	ioutil.WriteFile("c:/oabt.html", []byte(s), 0644)
+	//	s, _ := doc.Html()
+	//	ioutil.WriteFile("c:/oabt.html", []byte(s), 0644)
 	/*********************/
 
 	// 不带时间的日期
@@ -63,7 +62,8 @@ func DoSnatch(key string) []*MovieInfo {
 
 					m.UpdateTime = date + " " + n2.Find(".time").Text()
 					name := strings.Replace(n2.Find(".name").Text(), "[CiLi001.com]", "", -1)
-					m.Name = strings.Replace(name, "【ciLi001.com】", "", -1)
+					name = strings.Replace(name, "【ciLi001.com】", "", -1)
+					m.Name = strings.Replace(name, "【L】", "", -1)
 					m.Size = n2.Find(".size").Text()
 					m.Ed2k, _ = n2.Attr("data-ed2k")
 					m.Magnet, _ = n2.Attr("data-magnet")
@@ -75,6 +75,12 @@ func DoSnatch(key string) []*MovieInfo {
 		}
 
 	})
+
+	paginationUl := doc.Find(".pagination")
+	if paginationUl.Children().Size() > 0 {
+
+		fmt.Println(paginationUl.Find("a[aria-label='Next']").Parent().Prev().Children().First().Text())
+	}
 
 	return movieInfos
 }
