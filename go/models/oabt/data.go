@@ -7,6 +7,12 @@ type DayMovies struct {
 	MovieInfos []*MovieInfo `json:"movieInfos"` // 影片
 }
 
+// 分页信息
+type PageInfo struct {
+	Text   string `json:"text"`   // 分页按钮显示字符
+	ReqUrl string `json:"reqUrl"` // 向抓取服务器请求的url
+}
+
 // 影片信息
 type MovieInfo struct {
 	UpdateTime string `json:"updateTime"` // 影片更新时间

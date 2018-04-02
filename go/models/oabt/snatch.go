@@ -11,29 +11,40 @@ import (
 	"github.com/astaxie/beego"
 )
 
-func DoSnatch(key string) []*MovieInfo {
+func DoSnatch(key string) ([]*MovieInfo, []*PageInfo) {
 	urlIndex := beego.AppConfig.String("cili001.com")
 
 	if key != "" {
-		urlIndex = urlIndex + "/index?k=" + url.QueryEscape(key)
+		urlIndex = urlIndex + "/index/index?k=" + url.QueryEscape(key)
 	}
-	fmt.Println("========url:" + urlIndex)
+
+	return snatch(urlIndex)
+}
+
+func Page(href string) ([]*MovieInfo, []*PageInfo) {
+	urlIndex := beego.AppConfig.String("cili001.com")
+
+	if href != "" {
+		urlIndex = urlIndex + href
+	}
+
+	return snatch(urlIndex)
+}
+
+func snatch(url string) ([]*MovieInfo, []*PageInfo) {
+	fmt.Println("========url:" + url)
 
 	client := &http.Client{}
-	req, err := http.NewRequest("GET", "http://"+urlIndex, nil)
+	req, err := http.NewRequest("GET", "http://"+url, nil)
 	req.Header.Add("Accept", "text/html, application/xhtml+xml, */*")
 	req.Header.Add("Accept-Language", "zh-CN")
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36")
 	req.Header.Add("Connection", "Keep-Alive")
-	req.Header.Add("Host", urlIndex)
+	req.Header.Add("Host", beego.AppConfig.String("cili001.com"))
 	res, err := client.Do(req)
 	defer res.Body.Close()
 	//最后直接把res传给goquery就可以来解析网页了
 	doc, err := goquery.NewDocumentFromResponse(res)
-
-	//fmt.Println(doc.Find("#pages_btns").Html())
-
-	//	doc, err := goquery.NewDocument(urlIndex)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,11 +87,28 @@ func DoSnatch(key string) []*MovieInfo {
 
 	})
 
+	pageInfos := make([]*PageInfo, 0, 10)
 	paginationUl := doc.Find(".pagination")
 	if paginationUl.Children().Size() > 0 {
 
-		fmt.Println(paginationUl.Find("a[aria-label='Next']").Parent().Prev().Children().First().Text())
+		pageHrefList := paginationUl.Find("a")
+		if pageHrefList.Size() > 0 {
+			pageHrefList.Each(func(i int, n *goquery.Selection) {
+				p := new(PageInfo)
+				if v, ok := n.Attr("aria-label"); ok {
+					p.Text = v
+				} else {
+					p.Text = n.Text()
+				}
+
+				if href, ok := n.Attr("href"); ok {
+					p.ReqUrl = href
+				}
+
+				pageInfos = append(pageInfos, p)
+			})
+		}
 	}
 
-	return movieInfos
+	return movieInfos, pageInfos
 }

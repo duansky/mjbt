@@ -38,7 +38,7 @@
 			    </div>
 				<p></p>
 				<section data-am-widget="accordion" class="am-accordion am-accordion-gapped" data-am-accordion='{  }' id="sectionList">
-			      <dl class="am-accordion-item" v-for="(movieInfo, index) in list" v-bind:id="'dl_' + index">
+			      <dl class="am-accordion-item" v-for="(movieInfo, index) in dayMovies" v-bind:id="'dl_' + index">
 			        <dt class="am-accordion-title" v-bind:id="'dt_' + index" v-bind:index="index" onclick="toggle(this);">
 				          <div class="am-g">
 						  <div class="am-u-sm-6 am-u-lg-2">
@@ -67,33 +67,14 @@
 			  	</section>
 				<!-- 分页 start -->
 				<ul data-am-widget="pagination"
-				      class="am-pagination am-pagination-default">
-				
-				      <li class="am-pagination-prev ">
-				        <a href="#" class="">上一页</a>
-				      </li>
-				
-		            <li class="">
-		              <a href="#" class="">1</a>
-		            </li>
-		            <li class="am-active">
-		              <a href="#" class="am-active">2</a>
-		            </li>
-		            <li class="">
-		              <a href="#" class="">3</a>
-		            </li>
-		            <li class="">
-		              <a href="#" class="">4</a>
-		            </li>
-		            <li class="">
-		              <a href="#" class="">5</a>
-		            </li>
-				
-				      <li class="am-pagination-next ">
-				        <a href="#" class="">下一页</a>
-				      </li>
-				  </ul>
-				  <!-- 分页 end -->
+				    class="am-pagination am-pagination-default">
+				    
+			        <li v-for="(p, index) in pageInfos" :class="p.reqUrl == '' ? 'am-active' : ''">
+			          <a v-bind:reqUrl="p.reqUrl" class="" v-text="p.text" @click="doPage" href="javascript:void(0);"></a>
+			        </li>
+			       
+				</ul>
+				<!-- 分页 end -->
 			</div>
 			<footer class="admin-content-footer">
 				<hr>
@@ -112,9 +93,11 @@
 var app = new Vue({
 	el: '#app',
 	data: {
-		list: {},
+		dayMovies: {},
+		pageInfos: {},
 		param: {
 			keywords: "",
+			requrl: "",
 		},
 	},
 	created: function () {
@@ -124,7 +107,55 @@ var app = new Vue({
 		getJson: function () {
 			var self = this;
 			self.$http.post('list', self.param, {emulateJSON:true}).then(function(res) {
-				this.list = res.body
+				this.dayMovies = res.body.dayMovies;
+				var pageInfos = res.body.pageInfos;
+				
+				for (var i in pageInfos) {
+					switch(pageInfos[i].text) {
+					case "Frist":
+						pageInfos[i].text = "第一页";
+					  	break;
+					case "Previous":
+						pageInfos[i].text = "上一页";
+					  	break;
+					case "Next":
+						pageInfos[i].text = "下一页";
+					  	break;
+					case "Last":
+						pageInfos[i].text = "最末页";
+						break;
+					}	
+				}
+				this.pageInfos = pageInfos;
+			}).catch(function(err) {
+				console.log(err)  
+			})
+		},
+
+		doPage: function (e) {
+			var self = this;
+			self.param["requrl"] = e.target.getAttribute("requrl");
+			self.$http.post('page', self.param, {emulateJSON:true}).then(function(res) {
+				this.dayMovies = res.body.dayMovies;
+				var pageInfos = res.body.pageInfos;
+				
+				for (var i in pageInfos) {
+					switch(pageInfos[i].text) {
+					case "Frist":
+						pageInfos[i].text = "第一页";
+					  	break;
+					case "Previous":
+						pageInfos[i].text = "上一页";
+					  	break;
+					case "Next":
+						pageInfos[i].text = "下一页";
+					  	break;
+					case "Last":
+						pageInfos[i].text = "最末页";
+						break;
+					}	
+				}
+				this.pageInfos = pageInfos;
 			}).catch(function(err) {
 				console.log(err)  
 			})
