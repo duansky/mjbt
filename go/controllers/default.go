@@ -12,11 +12,17 @@ type MainController struct {
 
 // @router / [get]
 func (c *MainController) Get() {
+	oabt.Index()
 	c.TplName = "index.tpl"
 }
 
-// @router /list [post]
+// @router /list [get]
 func (c *MainController) List() {
+	c.TplName = "list.tpl"
+}
+
+// @router /listjson [post]
+func (c *MainController) Listjson() {
 	dayMovies, pageInfos := oabt.DoSnatch(c.GetString("keywords"))
 
 	c.Send2page(dayMovies, pageInfos)
@@ -34,7 +40,7 @@ func (c *MainController) Send2page(dayMovies []*oabt.MovieInfo, pageInfos []*oab
 	m["dayMovies"] = dayMovies
 	m["pageInfos"] = pageInfos
 
-	//	j, err := json.Marshal(m)
+	//	j, err := json.Marshal(pageInfos)
 	//	if err != nil {
 	//		log.Fatal(err)
 	//	}

@@ -11,6 +11,31 @@ import (
 	"github.com/astaxie/beego"
 )
 
+func Index() []string {
+	url := "http://" + beego.AppConfig.String("cili001.com") + "/home.html"
+
+	fmt.Println(url)
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Add("Accept", "text/html, application/xhtml+xml, */*")
+	req.Header.Add("Accept-Language", "zh-CN")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.75 Safari/537.36")
+	req.Header.Add("Connection", "Keep-Alive")
+	req.Header.Add("Host", beego.AppConfig.String("cili001.com"))
+	res, err := client.Do(req)
+	defer res.Body.Close()
+	//最后直接把res传给goquery就可以来解析网页了
+	root, err := goquery.NewDocumentFromResponse(res)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(root.Find(".search-hot").First().Html())
+
+	return nil
+}
+
 func DoSnatch(key string) ([]*MovieInfo, []*PageInfo) {
 	urlIndex := beego.AppConfig.String("cili001.com")
 
@@ -44,12 +69,12 @@ func snatch(url string) ([]*MovieInfo, []*PageInfo) {
 	res, err := client.Do(req)
 	defer res.Body.Close()
 	//最后直接把res传给goquery就可以来解析网页了
-	doc, err := goquery.NewDocumentFromResponse(res)
+	root, err := goquery.NewDocumentFromResponse(res)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	listItem := doc.Find(".link-list-wrapper")
+	listItem := root.Find(".link-list-wrapper")
 
 	/**********写文件***********/
 	//	s, _ := doc.Html()
@@ -88,7 +113,7 @@ func snatch(url string) ([]*MovieInfo, []*PageInfo) {
 	})
 
 	pageInfos := make([]*PageInfo, 0, 10)
-	paginationUl := doc.Find(".pagination")
+	paginationUl := root.Find(".pagination")
 	if paginationUl.Children().Size() > 0 {
 
 		pageHrefList := paginationUl.Find("a")

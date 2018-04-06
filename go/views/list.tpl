@@ -87,4 +87,97 @@
 <script src="https://cdn.bootcss.com/vue/2.5.15/vue.min.js"></script>
 <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
 <script type="application/javascript">
+var app = new Vue({
+	el: '#app',
+	data: {
+		dayMovies: {},
+		pageInfos: {},
+		param: {
+			keywords: "",
+			requrl: "",
+		},
+	},
+	created: function () {
+    	this.getJson();
+    },
+
+	updated: function () {
+		$(".am-pagination li").each(function( index ) { // 解决分页按钮样式bug
+			if ($(this).attr("lirequrl") == "") {
+				$(".am-active").removeClass("am-active");
+				$(this).addClass("am-active");
+			}
+		});
+    },
+	
+	methods: {
+		getJson: function () {
+			var self = this;
+			self.$http.post('listjson', self.param, {emulateJSON:true}).then(function(res) {
+				shrink();
+				dataHanlder(self, res)
+			}).catch(function(err) {
+				console.log(err)  
+			})
+		},
+
+		doPage: function (e) {
+			var self = this;
+			var requrl = e.target.getAttribute("requrl");
+			if (requrl == "") return;
+			
+			self.param["requrl"] = requrl;
+			self.$http.post('page', self.param, {emulateJSON:true}).then(function(res) {
+				shrink();
+				dataHanlder(self, res)
+			}).catch(function(err) {
+				console.log(err)  
+			})
+		},
+	}
+})
+
+var lastDt;
+function toggle(e) {
+	shrink();
+	var index = $(e).attr("index");
+
+	if (lastDt != e) {
+		$("#dl_" + index).addClass("am-active");
+		$("#dd_" + index).addClass("am-in");
+		lastDt = e;
+	} else {
+		lastDt = null;
+	}
+}
+
+function dataHanlder(self, res) {
+	self.dayMovies = res.body.dayMovies;
+	var pageInfos = res.body.pageInfos;
+	
+	for (var i in pageInfos) {
+		
+		switch(pageInfos[i].text) {
+		case "Frist":
+			pageInfos[i].text = "第一页";
+		  	break;
+		case "Previous":
+			pageInfos[i].text = "上一页";
+		  	break;
+		case "Next":
+			pageInfos[i].text = "下一页";
+		  	break;
+		case "Last":
+			pageInfos[i].text = "最末页";
+			break;
+		}	
+	}
+	
+	self.pageInfos = pageInfos;
+}
+
+function shrink() {
+	$("#sectionList .am-active, #sectionList .am-in").removeClass("am-active am-in");
+}
+
 </script>

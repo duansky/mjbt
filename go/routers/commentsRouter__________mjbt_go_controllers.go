@@ -19,6 +19,14 @@ func init() {
 		beego.ControllerComments{
 			Method: "List",
 			Router: `/list`,
+			AllowHTTPMethods: []string{"get"},
+			MethodParams: param.Make(),
+			Params: nil})
+
+	beego.GlobalControllerRouter["mjbt/controllers:MainController"] = append(beego.GlobalControllerRouter["mjbt/controllers:MainController"],
+		beego.ControllerComments{
+			Method: "Listjson",
+			Router: `/listjson`,
 			AllowHTTPMethods: []string{"post"},
 			MethodParams: param.Make(),
 			Params: nil})
