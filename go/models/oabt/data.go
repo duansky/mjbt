@@ -1,12 +1,5 @@
 package oabt
 
-// 单天下的所有影片
-type DayMovies struct {
-	Day string `json:"day"` // 2006-01-02
-	// 单个日期下所有的影片
-	MovieInfos []*MovieInfo `json:"movieInfos"` // 影片
-}
-
 // 分页信息
 type PageInfo struct {
 	Text   string `json:"text"`   // 分页按钮显示字符

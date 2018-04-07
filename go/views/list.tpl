@@ -18,7 +18,7 @@
 <body>
 	<header class="am-topbar am-topbar-inverse admin-header">
 		<div class="am-topbar-brand">
-			<strong>美剧搜索</strong>
+			<strong><a href="/">美剧搜索</a></strong>
 		</div>
 	</header>
 
@@ -93,7 +93,7 @@ var app = new Vue({
 		dayMovies: {},
 		pageInfos: {},
 		param: {
-			keywords: "",
+			keywords: "${.k}",
 			requrl: "",
 		},
 	},

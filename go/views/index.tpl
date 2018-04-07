@@ -11,6 +11,35 @@
 		float:none!important;
 	}
 	
+	.search-hot {
+	  width: 720px;
+	  margin: 30px auto 0 auto;
+	}
+	.search-hot li {
+	  display: inline-block;
+	  padding: 5px 10px;
+	  color: #336699;
+	}
+	.search-hot li a {
+	  color: #336699;
+	}
+	.search-hot li a.hot:before {
+	  content: "\f111";
+	  display: inline-block;
+	  font-family: 'Font Awesome 5 Pro';
+	  font-size: inherit;
+	  text-rendering: auto;
+	  -webkit-font-smoothing: antialiased;
+	  -moz-osx-font-smoothing: grayscale;
+	  font-weight: 900;
+	  transform: scale(0.5);
+	  color: #19e619;
+	}
+	.search-hot li.title {
+	  display: block;
+	  font-size: 1.1rem;
+	  color: #4d4d4d;
+	}
 	
 </style>
 </head>
@@ -29,49 +58,20 @@
 				<div class="am-g am-center am-u-md-4 floatno">
 			        <div class="am-u-sm-12">
 			          <div class="am-input-group am-input-group-sm">
-			            <input type="text" class="am-form-field" v-model="param.keywords" @keyup.enter="getJson">
+			            <input type="text" class="am-form-field" v-model="param.keywords" @keyup.enter="toList">
 				          <span class="am-input-group-btn">
-				            <button class="am-btn am-btn-default" type="button" @click="getJson">搜索</button>
+				            <button class="am-btn am-btn-default" type="button" @click="toList">搜索</button>
 				          </span>
 			          </div>
 			        </div>
 			    </div>
 				<p></p>
-				<section data-am-widget="accordion" class="am-accordion am-accordion-gapped" data-am-accordion='{  }' id="sectionList">
-			      <dl class="am-accordion-item" v-for="(movieInfo, index) in dayMovies" v-bind:id="'dl_' + index">
-			        <dt class="am-accordion-title" v-bind:id="'dt_' + index" v-bind:index="index" onclick="toggle(this);">
-				          <div class="am-g">
-						  <div class="am-u-sm-6 am-u-lg-2">
-						    <span class="am-show-md-down" ></span>
-						    <span class="am-hide-md-down" v-text="movieInfo.updateTime"></span>
-						  </div>
-						  <div class="am-u-sm-6 am-u-lg-8">
-						    <span class="am-show-md-down" ></span>
-						    <span class="am-hide-md-down" v-text="movieInfo.name"></span>
-						  </div>
-						  <div class="am-u-sm-12 am-u-lg-2">
-						    <span class="am-show-md-down" ></span>
-						    <span class="am-hide-md-down" v-text="movieInfo.size"></span>
-						  </div>
-						</div>
-			        </dt>
-			        <dd class="am-accordion-bd am-collapse" v-bind:id="'dd_' + index">
-			          <!-- 规避 Collapase 处理有 padding 的折叠内容计算计算有误问题， 加一个容器 -->
-			          <div class="am-accordion-content" >
-						<p style="word-wrap:break-word;" v-text="movieInfo.ed2k"></p>
-						<hr data-am-widget="divider" style="" class="am-divider am-divider-dotted" />
-						<p style="width:100%; word-wrap:break-word;" v-text="movieInfo.magnet"></p>
-			          </div>
-			        </dd>
-			      </dl>
-			  	</section>
-				<!-- 分页 start -->
-				<ul data-am-widget="pagination" class="am-pagination am-pagination-default">
-			        <li v-for="(p, index) in pageInfos"  v-bind:lirequrl="p.reqUrl">
-			          <a v-bind:reqUrl="p.reqUrl" v-text="p.text" @click="doPage" href="javascript:void(0);"></a>
-			        </li>
+				<ul class="search-hot">
+					<li class="title">热门搜索：</li>
+					<li v-for="(key, index) in keys">
+						<a v-bind:href="'list?k=' + key" v-text="key"></a>
+					</li>
 				</ul>
-				<!-- 分页 end -->
 			</div>
 			<footer class="admin-content-footer">
 				<hr>
@@ -87,4 +87,23 @@
 <script src="https://cdn.bootcss.com/vue/2.5.15/vue.min.js"></script>
 <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
 <script type="application/javascript">
+var json = ${.json};
+var obj = $.parseJSON(json);
+
+var app = new Vue({
+	el: '#app',
+	data: {
+		keys: obj.data.hotkey,
+		param: {
+			keywords: "",
+		},
+	},
+
+	methods: {
+		toList: function () {
+			window.location = "list?k=" + this.param.keywords;
+		},
+	}
+})
+
 </script>

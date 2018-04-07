@@ -12,12 +12,14 @@ type MainController struct {
 
 // @router / [get]
 func (c *MainController) Get() {
-	oabt.Index()
+	json := oabt.Index()
+	c.Data["json"] = json
 	c.TplName = "index.tpl"
 }
 
 // @router /list [get]
 func (c *MainController) List() {
+	c.Data["k"] = c.GetString("k")
 	c.TplName = "list.tpl"
 }
 

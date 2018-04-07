@@ -11,8 +11,8 @@ import (
 	"github.com/astaxie/beego"
 )
 
-func Index() []string {
-	url := "http://" + beego.AppConfig.String("cili001.com") + "/home.html"
+func Index() string {
+	url := "http://" + beego.AppConfig.String("cili001.com") + "/index/login_status"
 
 	fmt.Println(url)
 
@@ -31,9 +31,12 @@ func Index() []string {
 		log.Fatal(err)
 	}
 
-	fmt.Println(root.Find(".search-hot").First().Html())
+	/**********写文件***********/
+	//	s, _ := root.Html()
+	//	ioutil.WriteFile("c:/search-hot.html", []byte(s), 0644)
+	/*********************/
 
-	return nil
+	return root.Text()
 }
 
 func DoSnatch(key string) ([]*MovieInfo, []*PageInfo) {
@@ -97,9 +100,20 @@ func snatch(url string) ([]*MovieInfo, []*PageInfo) {
 					m := new(MovieInfo)
 
 					m.UpdateTime = date + " " + n2.Find(".time").Text()
-					name := strings.Replace(n2.Find(".name").Text(), "[CiLi001.com]", "", -1)
-					name = strings.Replace(name, "【ciLi001.com】", "", -1)
-					m.Name = strings.Replace(name, "【L】", "", -1)
+					name := n2.Find(".name").Text()
+					lowerName := strings.ToLower(name)
+
+					if i := strings.LastIndex(lowerName, ".mp4"); i != -1 {
+						name = name[:i+len(".mp4")]
+					} else if i := strings.LastIndex(lowerName, ".mkv"); i != -1 {
+						name = name[:i+len(".mkv")]
+					} else if i := strings.LastIndex(lowerName, ".rmvb"); i != -1 {
+						name = name[:i+len(".rmvb")]
+					} else if i := strings.LastIndex(lowerName, ".rm"); i != -1 {
+						name = name[:i+len(".rm")]
+					}
+
+					m.Name = name
 					m.Size = n2.Find(".size").Text()
 					m.Ed2k, _ = n2.Attr("data-ed2k")
 					m.Magnet, _ = n2.Attr("data-magnet")
