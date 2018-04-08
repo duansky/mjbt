@@ -87,7 +87,7 @@
 <script src="https://cdn.bootcss.com/vue/2.5.15/vue.min.js"></script>
 <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
 <script type="application/javascript">
-var json = ${.json};
+var json = "${.json}";
 var obj = $.parseJSON(json);
 
 var app = new Vue({
@@ -101,7 +101,7 @@ var app = new Vue({
 
 	methods: {
 		toList: function () {
-			window.location = "list?k=" + this.param.keywords;
+			window.location = "list?k=" + encodeURI(this.param.keywords);
 		},
 	}
 })

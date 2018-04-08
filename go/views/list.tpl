@@ -11,7 +11,6 @@
 		float:none!important;
 	}
 	
-	
 </style>
 </head>
 
@@ -39,21 +38,17 @@
 				<p></p>
 				<section data-am-widget="accordion" class="am-accordion am-accordion-gapped" data-am-accordion='{  }' id="sectionList">
 			      <dl class="am-accordion-item" v-for="(movieInfo, index) in dayMovies" v-bind:id="'dl_' + index">
-			        <dt class="am-accordion-title" v-bind:id="'dt_' + index" v-bind:index="index" onclick="toggle(this);">
-				          <div class="am-g">
-						  <div class="am-u-sm-6 am-u-lg-2">
-						    <span class="am-show-md-down" ></span>
-						    <span class="am-hide-md-down" v-text="movieInfo.updateTime"></span>
-						  </div>
-						  <div class="am-u-sm-6 am-u-lg-8">
-						    <span class="am-show-md-down" ></span>
-						    <span class="am-hide-md-down" v-text="movieInfo.name"></span>
-						  </div>
-						  <div class="am-u-sm-12 am-u-lg-2">
-						    <span class="am-show-md-down" ></span>
-						    <span class="am-hide-md-down" v-text="movieInfo.size"></span>
-						  </div>
+			        <dt class="am-accordion-title" style="cursor: default;" v-bind:id="'dt_' + index" v-bind:index="index" >
+						<div class="am-g">
+							<div class="am-u-sm-2" v-text="movieInfo.updateTime"></div>
+							<div class="am-u-sm-7" v-text="movieInfo.name" style="cursor:pointer;" onclick="toggle(this)" v-bind:index="index"></div>
+							<div class="am-u-sm-1" v-text="movieInfo.size"></div>
+							<div class="am-u-sm-2">
+								<button type="button" class="js-copy am-btn am-btn-primary am-round" v-bind:data-clipboard-text="movieInfo.ed2k" onclick="alert('已复制链接,请粘贴到迅雷等下载工具中')" ><i class="am-icon-copy"></i>ED2K</button>
+								<button type="button" class="js-copy am-btn am-btn-secondary am-round" v-bind:data-clipboard-text="movieInfo.magnet" onclick="alert('已复制链接,请粘贴到迅雷等下载工具中')"><i class="am-icon-copy"></i>MAG</button>
+							</div>
 						</div>
+						
 			        </dt>
 			        <dd class="am-accordion-bd am-collapse" v-bind:id="'dd_' + index">
 			          <!-- 规避 Collapase 处理有 padding 的折叠内容计算计算有误问题， 加一个容器 -->
@@ -83,10 +78,13 @@
 </body>
 </html>
 <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/clipboard.js/2.0.0/clipboard.min.js"></script>
 <script src="https://cdn.bootcss.com/amazeui/2.7.2/js/amazeui.min.js"></script>
 <script src="https://cdn.bootcss.com/vue/2.5.15/vue.min.js"></script>
 <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
 <script type="application/javascript">
+
+
 var app = new Vue({
 	el: '#app',
 	data: {
@@ -179,5 +177,7 @@ function dataHanlder(self, res) {
 function shrink() {
 	$("#sectionList .am-active, #sectionList .am-in").removeClass("am-active am-in");
 }
+
+var clipboard = new ClipboardJS('.js-copy');
 
 </script>
