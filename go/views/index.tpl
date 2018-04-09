@@ -5,6 +5,8 @@
 <title>美剧搜索</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" Content="zh-CN">
+<meta name="Keywords" Content="美剧,美剧搜索,美剧下载,下载美剧">
 <link href="https://cdn.bootcss.com/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet" type="text/css">
 <style>
 	.floatno{
@@ -47,7 +49,7 @@
 <body>
 	<header class="am-topbar am-topbar-inverse admin-header">
 		<div class="am-topbar-brand">
-			<strong>美剧搜索</strong>
+			<strong><a href="/">美剧搜索</a></strong>
 		</div>
 	</header>
 
@@ -69,7 +71,7 @@
 				<ul class="search-hot">
 					<li class="title">热门搜索：</li>
 					<li v-for="(key, index) in keys">
-						<a v-bind:href="'list?k=' + key" v-text="key"></a>
+						<a v-bind:href="'list?k=' + encodeURI(key)" v-text="key"></a>
 					</li>
 				</ul>
 			</div>
@@ -89,7 +91,6 @@
 <script type="application/javascript">
 var json = "${.json}";
 var obj = $.parseJSON(json);
-
 var app = new Vue({
 	el: '#app',
 	data: {
