@@ -30,7 +30,7 @@
 				<div class="am-g am-center am-u-md-4 floatno">
 			        <div class="am-u-sm-12">
 			          <div class="am-input-group am-input-group-sm">
-			            <input type="text" class="am-form-field" v-model="param.keywords" @keyup.enter="getJson">
+			            <input type="text" class="am-form-field" v-model="param.key" @keyup.enter="getJson">
 				          <span class="am-input-group-btn">
 				            <button class="am-btn am-btn-default" type="button" @click="getJson">搜索</button>
 				          </span>
@@ -93,7 +93,8 @@ var app = new Vue({
 		dayMovies: {},
 		pageInfos: {},
 		param: {
-			keywords: "${.k}",
+			keywords: "",
+			key: b64_to_utf8("${.k}"),
 			requrl: "",
 		},
 	},
@@ -113,6 +114,9 @@ var app = new Vue({
 	methods: {
 		getJson: function () {
 			var self = this;
+			if (self.param.key && self.param.key != "") {
+				self.param.keywords = utf8_to_b64(self.param.key);
+			}
 			self.$http.post('listjson', self.param, {emulateJSON:true}).then(function(res) {
 				shrink();
 				dataHanlder(self, res)
@@ -152,8 +156,9 @@ function toggle(e) {
 }
 
 function dataHanlder(self, res) {
-	self.dayMovies = res.body.dayMovies;
-	var pageInfos = res.body.pageInfos;
+	var jsonData = jQuery.parseJSON(b64_to_utf8(res.body));
+	self.dayMovies = jsonData.dayMovies;
+	var pageInfos = jsonData.pageInfos;
 	
 	for (var i in pageInfos) {
 		
@@ -181,5 +186,13 @@ function shrink() {
 }
 
 var clipboard = new ClipboardJS('.js-copy');
+
+function utf8_to_b64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+function b64_to_utf8(str) {
+    return decodeURIComponent(escape(window.atob(str)));
+}
 
 </script>

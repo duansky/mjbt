@@ -1,6 +1,10 @@
 package controllers
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"log"
 	"mjbt/models/oabt"
 
 	"github.com/astaxie/beego"
@@ -25,7 +29,13 @@ func (c *MainController) List() {
 
 // @router /listjson [post]
 func (c *MainController) Listjson() {
-	dayMovies, pageInfos := oabt.DoSnatch(c.GetString("keywords"))
+	fmt.Println(c.GetString("keywords"))
+	decodeBytes, err := base64.StdEncoding.DecodeString(c.GetString("keywords"))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	dayMovies, pageInfos := oabt.DoSnatch(string(decodeBytes))
 
 	c.Send2page(dayMovies, pageInfos)
 }
@@ -42,12 +52,12 @@ func (c *MainController) Send2page(dayMovies []*oabt.MovieInfo, pageInfos []*oab
 	m["dayMovies"] = dayMovies
 	m["pageInfos"] = pageInfos
 
-	//	j, err := json.Marshal(pageInfos)
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
+	j, err := json.Marshal(m)
+	if err != nil {
+		log.Fatal(err)
+	}
 	//	fmt.Println(string(j))
 
-	c.Data["json"] = m
+	c.Data["json"] = base64.StdEncoding.EncodeToString(j) // m
 	c.ServeJSON()
 }

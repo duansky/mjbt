@@ -71,7 +71,7 @@
 				<ul class="search-hot">
 					<li class="title">热门搜索：</li>
 					<li v-for="(key, index) in keys">
-						<a v-bind:href="'list?k=' + encodeURI(key)" v-text="key"></a>
+						<a v-bind:href="'list?k=' + utf8_to_b64(key)" v-text="key"></a>
 					</li>
 				</ul>
 			</div>
@@ -90,6 +90,7 @@
 <script src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
 <script type="application/javascript">
 var json = "${.json}";
+
 var obj = $.parseJSON(json);
 var app = new Vue({
 	el: '#app',
@@ -102,9 +103,17 @@ var app = new Vue({
 
 	methods: {
 		toList: function () {
-			window.location = "list?k=" + encodeURI(this.param.keywords);
+			window.location = "list?k=" + utf8_to_b64(this.param.keywords);
 		},
 	}
 })
+
+function utf8_to_b64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+function b64_to_utf8(str) {
+    return decodeURIComponent(escape(window.atob(str)));
+}
 
 </script>
