@@ -94,7 +94,7 @@ var app = new Vue({
 		pageInfos: {},
 		param: {
 			keywords: "",
-			key: b64_to_utf8("${.k}"),
+			key: "${.k}",
 			requrl: "",
 		},
 	},
@@ -114,9 +114,10 @@ var app = new Vue({
 	methods: {
 		getJson: function () {
 			var self = this;
+			/*
 			if (self.param.key && self.param.key != "") {
 				self.param.keywords = utf8_to_b64(self.param.key);
-			}
+			}*/
 			self.$http.post('listjson', self.param, {emulateJSON:true}).then(function(res) {
 				shrink();
 				dataHanlder(self, res)

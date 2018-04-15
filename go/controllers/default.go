@@ -3,9 +3,10 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"log"
 	"mjbt/models/oabt"
+	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 )
@@ -14,10 +15,22 @@ type MainController struct {
 	beego.Controller
 }
 
+var lastGetTime time.Time
+
+func init() {
+	lastGetTime = time.Now()
+}
+
 // @router / [get]
 func (c *MainController) Get() {
-	json := oabt.Index()
-	c.Data["json"] = json
+
+	if oabt.Hotkeys == "" {
+		if s := oabt.Index(); strings.Contains(s, "is_login") {
+			oabt.Hotkeys = s
+		}
+	}
+
+	c.Data["json"] = oabt.Hotkeys
 	c.TplName = "index.tpl"
 }
 
@@ -29,13 +42,13 @@ func (c *MainController) List() {
 
 // @router /listjson [post]
 func (c *MainController) Listjson() {
-	fmt.Println(c.GetString("keywords"))
-	decodeBytes, err := base64.StdEncoding.DecodeString(c.GetString("keywords"))
-	if err != nil {
-		log.Fatalln(err)
-	}
+	//	decodeBytes, err := base64.StdEncoding.DecodeString(c.GetString("keywords"))
+	//	if err != nil {
+	//		log.Fatalln(err)
+	//	}
 
-	dayMovies, pageInfos := oabt.DoSnatch(string(decodeBytes))
+	//	dayMovies, pageInfos := oabt.DoSnatch(string(decodeBytes))
+	dayMovies, pageInfos := oabt.DoSnatch(c.GetString("key"))
 
 	c.Send2page(dayMovies, pageInfos)
 }

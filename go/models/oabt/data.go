@@ -14,3 +14,5 @@ type MovieInfo struct {
 	Magnet     string `json:"magnet"`     // 影片磁力链接
 	Ed2k       string `json:"ed2k"`       // 影片电驴链接
 }
+
+var Hotkeys string

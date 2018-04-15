@@ -71,7 +71,7 @@
 				<ul class="search-hot">
 					<li class="title">热门搜索：</li>
 					<li v-for="(key, index) in keys">
-						<a v-bind:href="'list?k=' + utf8_to_b64(key)" v-text="key"></a>
+						<a v-bind:href="'list?k=' + key" v-text="key"></a>
 					</li>
 				</ul>
 			</div>
@@ -91,11 +91,11 @@
 <script type="application/javascript">
 var json = "${.json}";
 
-var obj = $.parseJSON(json);
+var obj = json == "" ? "" : $.parseJSON(json);
 var app = new Vue({
 	el: '#app',
 	data: {
-		keys: obj.data.hotkey,
+		keys: json == "" ? [] : obj.data.hotkey,
 		param: {
 			keywords: "",
 		},
@@ -103,7 +103,7 @@ var app = new Vue({
 
 	methods: {
 		toList: function () {
-			window.location = "list?k=" + utf8_to_b64(this.param.keywords);
+			window.location = "list?k=" + this.param.keywords;
 		},
 	}
 })

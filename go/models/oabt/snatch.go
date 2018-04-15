@@ -2,6 +2,7 @@ package oabt
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -32,8 +33,8 @@ func Index() string {
 	}
 
 	/**********写文件***********/
-	//	s, _ := root.Html()
-	//	ioutil.WriteFile("c:/search-hot.html", []byte(s), 0644)
+	s, _ := root.Html()
+	ioutil.WriteFile("./search-hot.html", []byte(s), 0644)
 	/*********************/
 
 	return root.Text()
@@ -80,8 +81,8 @@ func snatch(url string) ([]*MovieInfo, []*PageInfo) {
 	listItem := root.Find(".link-list-wrapper")
 
 	/**********写文件***********/
-	//	s, _ := doc.Html()
-	//	ioutil.WriteFile("c:/oabt.html", []byte(s), 0644)
+	s, _ := root.Html()
+	ioutil.WriteFile("./oabt.html", []byte(s), 0644)
 	/*********************/
 
 	// 不带时间的日期
